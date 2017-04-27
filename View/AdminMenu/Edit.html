@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="/Content/bootstrap/css/bootstrap.min.css">
+    <!-- Layer -->
+    <link rel="stylesheet" href="/Content/layer/skin/default/layer.css">
+
+    <link rel="stylesheet" href="/Content/css/common.css">
+    <!-- jQuery 2.2.3 -->
+    <script src="/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="/Content/plugins/jQuery/jquery.cookie.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="/Content/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/Content/layer/layer.js"></script>
+
+    <script src="/Content/js/AUTO.js"></script>
+    <script src="/Content/js/ACOM.js"></script>
+</head>
+<body>
+    <div class="body-container">
+        <input type="hidden" class="ModelField" id="Id" />
+        <div class="form-item">
+            <label class="form-label">标题</label>
+            <div class="allline-input"><input type="text" id="Title" class="form-control ModelField" placeholder="请输入标题"></div>
+        </div>
+        <div class="form-item">
+            <label class="form-label">页面地址</label>
+            <div class="allline-input"><input type="text" id="PageUrl" class="form-control ModelField" placeholder="请输入解释"></div>
+        </div>
+        <div class="form-item">
+            <label class="form-label">父级</label>
+            <input type="hidden" class="ModelField" id="PrtSid" />
+            <div class="halfline-input"><input type="text" onclick="PopAdminMenuTree('PrtSid');" id="PrtSidPop" class="form-control" placeholder="请输入父级"></div>
+            <label class="form-label">排序</label>
+            <div class="halfline-input"><input type="number" id="OrderId" class="form-control ModelField" placeholder="请输入排序"></div>
+        </div>
+        <div class="form-item">
+            <label class="form-label">订阅角色</label>
+            <input type="hidden" class="ModelField" id="AcceptRoles" />
+            <div class="allline-input">
+                <div id="AcceptRolesPop" class="form-control" onclick="PopSelectWin('AcceptRoles', 'SysRoleSelect','multiple')">
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="form-label">订阅用户</label>
+            <input type="hidden" class="ModelField" id="AcceptPartners" />
+            <div class="allline-input">
+                <div id="AcceptPartnersPop" class="form-control" onclick="PopSelectWin('AcceptPartners', 'PartnerSelect', 'multiple')">
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="form-label">其他数据</label>
+            <div class="allline-input"><textarea id="OtherData" placeholder="请输入内容" class="form-textarea ModelField" needencode="yes"></textarea></div>
+        </div>
+        <div class="btn-group" style="float:right;margin:40px 0;">
+            <button type="button" class="btn btn-default btn-info" onclick="LayerCancel();" title="取消">取消</button>
+            <button style="" onclick="Submit();" type="button" class="btn btn-default btn-success">提交</button>
+        </div>
+    </div>
+    <script>
+        var rid = request("rid");//用来存放记录ID
+        var PrtSid = request("PrtSid");
+        var PrtTitle = request("PrtTitle");
+
+        $("#AcceptRolesPop li").on("click", function () {
+            event.stopPropagation();
+        })
+        //初始化
+        AUTO.Init({
+            url: '/AjaxCommon/Detail.cspx?rid=' + rid + '&ModelType=T_AdminMenu',
+            BeforeInit: function () { },
+            AfterInit: function (res) {
+                $("#PrtSid").val(PrtSid);
+                $("#PrtSidPop").val(PrtTitle);
+            }
+        });
+
+        //提交之前，特殊的字段进行处理
+        //额外提交的字段的写入
+        function Submit() {
+            AUTO.Submit({
+                url: '/AjaxAdminMenu/Edit.cspx',
+                BeforeSubmit: function (Dic, OtherDic) { },
+                AfterSubmit: function (res) {
+                    layer.msg(res.msg);
+                    if (res.state == true) {
+                        sessionStorage.setItem("MyJCService_IsReload", "true");
+                        setTimeout(function () {
+                            LayerCancel();
+                        }, 500);
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

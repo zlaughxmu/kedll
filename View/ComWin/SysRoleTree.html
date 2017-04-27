@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>角色树</title>
+    <meta charset="utf-8" />
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="/Content/bootstrap/css/bootstrap.min.css">
+    <!-- zTree -->
+    <link rel="stylesheet" href="/Content/zTree/css/metroStyle/metroStyle.css" />
+    <!-- Layer -->
+    <link rel="stylesheet" href="/Content/layer/skin/default/layer.css">
+    <link rel="stylesheet" href="/Content/css/common.css">
+
+    <!-- jQuery 2.2.3 -->
+    <script src="/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="/Content/plugins/jQuery/jquery.cookie.js"></script>
+    <!-- zTree -->
+    <script src="/Content/zTree/js/jquery.ztree.core.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="/Content/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/Content/layer/layer.js"></script>
+    <script src="/Content/js/ACOM.js"></script>
+    <script>
+        var zTreeObj;
+        // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+        var setting = {
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                onClick: zTreeOnClick
+            }
+        };
+        function zTreeOnClick(event, treeId, treeNode) {
+            SetMyStorage("layer_data", treeNode.id + "," + treeNode.name);
+            LayerCancel();
+            //点击事件
+            //alert(treeNode.tId + "," + treeNode.name);
+        };
+        function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+        };
+        $(document).ready(function () {
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: '/AjaxSysRole/TreeList.cspx',
+                success: function (res) {
+                    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, res);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="body-container">
+        <div class="form-item">
+            <div class="search-div" style=""><input type="text" id="Title" class="form-control"></div>
+            <button type="button" onclick="" class="search-btn btn btn-success">搜索</button>
+        </div>
+        <div class="form-item">
+            <div class="content-div">
+                <ul id="treeDemo" class="ztree"></ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

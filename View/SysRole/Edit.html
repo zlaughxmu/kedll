@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="/Content/bootstrap/css/bootstrap.min.css">
+    <!-- Layer -->
+    <link rel="stylesheet" href="/Content/layer/skin/default/layer.css">
+
+    <link rel="stylesheet" href="/Content/css/common.css">
+    <!-- jQuery 2.2.3 -->
+    <script src="/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="/Content/plugins/jQuery/jquery.cookie.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="/Content/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/Content/layer/layer.js"></script>
+    <script src="/Content/js/AUTO.js"></script>
+    <script src="/Content/js/ACOM.js"></script>
+</head>
+<body>
+    <div class="body-container">
+        <input type="hidden" class="ModelField" id="Id" />
+        <div class="form-item">
+            <label class="form-label">标题</label>
+            <div class="allline-input"><input type="text" id="Title" class="form-control ModelField" placeholder="请输入标题"></div>
+        </div>
+        <div class="form-item">
+            <label class="form-label">解释</label>
+            <div class="allline-input"><input type="text" id="Explain" class="form-control ModelField" placeholder="请输入解释"></div>
+        </div>
+        <div class="form-item">
+            <label class="form-label">分类</label>
+            <input type="hidden" class="ModelField" id="ComClassSid" />
+            <div class="halfline-input"><input type="text" onclick="PopComClassTree('ComClassSid', '', '|角色分类|');" id="ComClassSidPop" class="form-control" placeholder="请输入父级"></div>
+            <label class="form-label">排序</label>
+            <div class="halfline-input"><input type="number" id="OrderId" class="form-control ModelField" placeholder="请输入排序"></div>
+        </div>
+        <div class="btn-group" style="float:right;margin:40px 0;">
+            <button type="button" class="btn btn-default btn-info" onclick="LayerCancel();" title="取消">取消</button>
+            <button style="" onclick="Submit();" type="button" class="btn btn-default btn-success">提交</button>
+        </div>
+    </div>
+    <script>
+
+        var rid = request("rid");//用来存放记录ID
+
+        AUTO.Init({
+            url: '/AjaxCommon/Detail.cspx?rid=' + rid + '&ModelType=T_SysRole',
+            BeforeInit: function () { },
+            AfterInit: function (res) { }
+        });
+
+        function Submit() {
+            AUTO.Submit({
+                url: '/AjaxCommon/Edit.cspx',
+                BeforeSubmit: function (Dic, OtherDic) {
+                    OtherDic.set("ModelType", "T_SysRole");
+                },
+                AfterSubmit: function (res) {
+                    layer.msg(res.msg);
+                    if (res.state == true) {
+                        sessionStorage.setItem("MyJCService_IsReload", "true");
+                        setTimeout(function () {
+                            LayerCancel();
+                        }, 500);
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
